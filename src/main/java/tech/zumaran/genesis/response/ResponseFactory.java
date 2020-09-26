@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import tech.zumaran.genesis.exception.NotFoundException;
 import tech.zumaran.genesis.framework.GenesisEntity;
 
-public abstract class ResponseFactory {
+@Component
+public class ResponseFactory {
 	
 	private static URI getCurrentURI() {
 		return null;
@@ -49,6 +51,10 @@ public abstract class ResponseFactory {
 	
 	public ResponseEntity<?> purged(GenesisEntity entity) {
 		return new PurgedResponse(entity).createResponse();
+	}
+	
+	public ResponseEntity<?> purged(List<? extends GenesisEntity> purged) {
+		return new PurgedAllResponse(purged).createResponse();
 	}
 	
 	//============================================================================================

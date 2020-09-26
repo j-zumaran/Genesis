@@ -21,10 +21,6 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
         return repository.findAll();
     }
     
-    public List<Entity> recycleBin() {
-    	return repository.findAllRecycleBin();
-    }
-    
     public Entity findById(long id) throws NotFoundException {
         Optional<Entity> entity = repository.findById(id);
         if (entity.isPresent()) 
@@ -111,8 +107,10 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     }
     
     @Transactional
-    public void purgeAllById(Collection<Long> ids) throws NotFoundInRecycleBin_Exception {
-    	purgeAll(repository.findAllById(ids));
+    public List<Entity> purgeAllById(Collection<Long> ids) throws NotFoundInRecycleBin_Exception {
+    	List<Entity> entities = repository.findAllById(ids);
+    	purgeAll(entities);
+    	return entities;
     }
     
     @Transactional
@@ -123,4 +121,8 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     	}
         repository.deleteAll(entities);
 	}
+    
+    public List<Entity> recycleBin() {
+    	return repository.findAllRecycleBin();
+    }
 }

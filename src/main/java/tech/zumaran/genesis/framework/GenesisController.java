@@ -63,6 +63,11 @@ public abstract class GenesisController<Entity extends GenesisEntity> {
         return responseFactory.purged(service.purge(id));
     }
     
+    @DeleteMapping("/purgeall/{id}")
+    public ResponseEntity<?> purge(@PathVariable List<Long> ids) throws NotFoundInRecycleBin_Exception {
+        return responseFactory.purged(service.purgeAllById(ids));
+    }
+    
     @GetMapping("/recyclebin")
     public ResponseEntity<List<Entity>> recycleBin() {
         return ResponseEntity.ok(service.recycleBin());

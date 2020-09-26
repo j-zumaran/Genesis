@@ -15,11 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @MappedSuperclass
 public abstract class GenesisEntity implements Serializable {
 	
-	//public static final String SOFT_DELETE = "deleted = 'FALSE'";
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 176952152819273250L;
 
 	@Id
@@ -57,43 +52,4 @@ public abstract class GenesisEntity implements Serializable {
 	public String getType() {
 		return getClass().getSimpleName();
 	}
-	
-	/*private String stringFormat() {
-		StringBuilder sb = new StringBuilder(getClass().getSimpleName() + " -> { ");
-
-	    try {
-	        Field[] fields = getClass().getDeclaredFields();
-	        
-	        for(Field f :fields){
-	        	String fName = f.getName();
-	        	if (fName.equals("serialVersionUID") || fName.equals("LOG"))
-	        		continue;
-	        	
-	        	f.setAccessible(true);
-        		Object value = f.get(this);
-        		
-        		if (value == null) 
-        			continue;
-        		
-        		sb.append(fName + ": " + value + ", ");
-	        }
-	        
-	        sb.replace(sb.length() - 2, sb.length(), " }");
-	    } catch (Exception e) {
-	    	LOG.warn(e.getMessage());
-	    }
-	    return sb.toString();
-	}*/
-	
-	/*protected static<E extends BaseEntity> List<E> isDeletedGetChildren(BaseEntity entity, List<E> children) {
-		if (children == null) return List.of();
-		if (children.isEmpty()) return children;
-		if (entity.isDeleted()) {
-			return children.stream().filter(e -> e.isDeleted()).collect(Collectors.toList()); 
-		} else {
-			return children.stream().filter(e -> !e.isDeleted()).collect(Collectors.toList()); 
-		}
-	}*/
-	
-	//private static final Logger LOG = LoggerFactory.getLogger(BaseEntity.class);
 }
