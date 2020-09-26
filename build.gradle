@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
 }
+apply plugin: 'maven-publish'
 
 group = 'tech.zumaran'
 version = '0.0.1-SNAPSHOT'
@@ -10,10 +11,6 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
-		
-	maven { 
-		url 'https://jitpack.io' 
-	}
 }
 
 dependencies {
