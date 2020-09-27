@@ -1,4 +1,4 @@
-package tech.zumaran.genesis.framework.constraint;
+package tech.zumaran.genesis.constraint;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
@@ -8,11 +8,11 @@ import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
+import tech.zumaran.genesis.GenesisEntity;
 import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.UniqueConstraintException;
-import tech.zumaran.genesis.framework.GenesisEntity;
-import tech.zumaran.genesis.framework.function.InsertAllFunction;
-import tech.zumaran.genesis.framework.function.InsertFunction;
+import tech.zumaran.genesis.function.InsertAllFunction;
+import tech.zumaran.genesis.function.InsertFunction;
 
 public interface UniqueConstraint<Entity extends GenesisEntity> {
 	

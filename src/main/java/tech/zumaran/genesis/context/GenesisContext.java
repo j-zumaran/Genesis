@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tech.zumaran.genesis.framework.GenesisEntity;
+import tech.zumaran.genesis.GenesisEntity;
 
 @MappedSuperclass
 @NoArgsConstructor

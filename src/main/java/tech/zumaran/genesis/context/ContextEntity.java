@@ -5,7 +5,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import lombok.Setter;
-import tech.zumaran.genesis.framework.GenesisEntity;
+import tech.zumaran.genesis.GenesisEntity;
 
 @MappedSuperclass
 public abstract class ContextEntity<Context extends GenesisContext> extends GenesisEntity {

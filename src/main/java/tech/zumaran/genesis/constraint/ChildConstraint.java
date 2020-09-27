@@ -1,16 +1,16 @@
-package tech.zumaran.genesis.framework.constraint;
+package tech.zumaran.genesis.constraint;
 
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import tech.zumaran.genesis.GenesisEntity;
+import tech.zumaran.genesis.GenesisRepository;
+import tech.zumaran.genesis.GenesisService;
 import tech.zumaran.genesis.exception.ChildConstraintException;
 import tech.zumaran.genesis.exception.GenesisException;
-import tech.zumaran.genesis.framework.GenesisEntity;
-import tech.zumaran.genesis.framework.GenesisRepository;
-import tech.zumaran.genesis.framework.GenesisService;
-import tech.zumaran.genesis.framework.function.IDFunction;
+import tech.zumaran.genesis.function.IDFunction;
 
 public interface ChildConstraint<E extends GenesisEntity, C extends GenesisEntity> {
 

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import tech.zumaran.genesis.framework.GenesisRepository;
+import tech.zumaran.genesis.GenesisRepository;
 
 public interface ContextEntityRepository<Context extends GenesisContext, Entity extends ContextEntity<Context>> extends GenesisRepository<Entity> {
 	

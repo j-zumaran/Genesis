@@ -1,4 +1,4 @@
-package tech.zumaran.genesis.framework;
+package tech.zumaran.genesis;
 
 import java.util.List;
 import java.util.Optional;

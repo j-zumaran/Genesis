@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-import tech.zumaran.genesis.framework.GenesisEntity;
+import tech.zumaran.genesis.GenesisEntity;
 
 public class PurgedAllResponse extends ListEntityResponse {
 

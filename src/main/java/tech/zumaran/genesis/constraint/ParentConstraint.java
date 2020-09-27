@@ -1,14 +1,14 @@
-package tech.zumaran.genesis.framework.constraint;
+package tech.zumaran.genesis.constraint;
 
 import java.util.Collection;
 import java.util.List;
 
+import tech.zumaran.genesis.GenesisEntity;
+import tech.zumaran.genesis.GenesisService;
 import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.ParentConstraintException;
-import tech.zumaran.genesis.framework.GenesisEntity;
-import tech.zumaran.genesis.framework.GenesisService;
-import tech.zumaran.genesis.framework.function.InsertAllFunction;
-import tech.zumaran.genesis.framework.function.InsertFunction;
+import tech.zumaran.genesis.function.InsertAllFunction;
+import tech.zumaran.genesis.function.InsertFunction;
 
 public interface ParentConstraint<P extends GenesisEntity, C extends GenesisEntity> {
 
