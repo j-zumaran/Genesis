@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import tech.zumaran.genesis.exception.NotFoundException;
 import tech.zumaran.genesis.framework.GenesisEntity;
@@ -14,7 +15,7 @@ import tech.zumaran.genesis.framework.GenesisEntity;
 public class ResponseFactory {
 	
 	private static URI getCurrentURI() {
-		return null;
+		return ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
 	}
 	
 	//=============================================================================================================

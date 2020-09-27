@@ -4,18 +4,15 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
+import lombok.Getter;
 import tech.zumaran.genesis.framework.GenesisEntity;
 
-public abstract class ListEntityResponse extends TransactionResponse {
+public abstract class ListEntityResponse extends GenesisResponse {
 
-	private List<? extends GenesisEntity> entities;
+	@Getter private List<? extends GenesisEntity> entities;
 
 	public ListEntityResponse(HttpStatus status, String message, List<? extends GenesisEntity> entities) {
 		super(status, message);
 		this.entities = entities;
-	}
-
-	public List<? extends GenesisEntity> getEntities() {
-		return entities;
 	}
 }

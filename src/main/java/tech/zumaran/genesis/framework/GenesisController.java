@@ -18,10 +18,10 @@ import tech.zumaran.genesis.response.ResponseFactory;
 public abstract class GenesisController<Entity extends GenesisEntity> {
 
 	@Autowired
-	private GenesisService<Entity> service;
+	protected GenesisService<Entity> service;
 
 	@Autowired
-    private ResponseFactory responseFactory;
+    protected ResponseFactory responseFactory;
 
 	@GetMapping("/all")
     public ResponseEntity<List<Entity>> findAll() {

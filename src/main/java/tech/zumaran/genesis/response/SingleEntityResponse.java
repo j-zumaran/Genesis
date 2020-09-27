@@ -2,18 +2,15 @@ package tech.zumaran.genesis.response;
 
 import org.springframework.http.HttpStatus;
 
+import lombok.Getter;
 import tech.zumaran.genesis.framework.GenesisEntity;
 
-public abstract class SingleEntityResponse extends TransactionResponse {
+public abstract class SingleEntityResponse extends GenesisResponse {
 	
-	private GenesisEntity entity;
+	@Getter private GenesisEntity entity;
 
 	SingleEntityResponse(HttpStatus status, String message, GenesisEntity entity) {
 		super(status, message);
 		this.entity = entity;
-	}
-
-	public GenesisEntity getEntity() {
-		return entity;
 	}
 }
