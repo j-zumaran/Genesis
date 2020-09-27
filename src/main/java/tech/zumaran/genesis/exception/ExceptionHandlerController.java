@@ -30,7 +30,7 @@ public abstract class ExceptionHandlerController extends ResponseEntityException
 	}
 	
 	@ExceptionHandler(GenesisException.class)
-	public ResponseEntity<?> transactionError(GenesisException e) {
+	public ResponseEntity<?> genesisError(GenesisException e) {
 		return responseFactory.exception(HttpStatus.BAD_REQUEST, e);
 	}
 	

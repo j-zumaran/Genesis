@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.NotFoundException;
 import tech.zumaran.genesis.exception.NotFoundInRecycleBin_Exception;
 
@@ -32,12 +33,12 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     }
 
     @Transactional
-    public Entity insert(Entity entity) {
+    public Entity insert(Entity entity) throws GenesisException {
     	return repository.saveAndFlush(entity);
     }
 
     @Transactional
-    public List<Entity> insertAll(Collection<Entity> entities) {
+    public List<Entity> insertAll(Collection<Entity> entities) throws GenesisException {
     	return repository.saveAll(entities);
     }
     
@@ -72,14 +73,9 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     
     @Transactional(noRollbackFor = NotFoundInRecycleBin_Exception.class)
     public Entity recover(Long id) throws NotFoundInRecycleBin_Exception {
-    	Optional<Entity> maybeDeleted = repository.findInRecycleBinById(id);
-    	if (maybeDeleted.isPresent()) {
-    		maybeDeleted.get().setDeleted(false);
-            return maybeDeleted.get();
-    	} else {
-    		throw new NotFoundInRecycleBin_Exception(entityType(), id);
-    	}
-        
+		Entity deleted = findInRecycleBinById(id);
+		deleted.setDeleted(false);
+        return deleted;
     }
     
     @Transactional
@@ -96,14 +92,9 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
 
     @Transactional(noRollbackFor = NotFoundInRecycleBin_Exception.class)
     public Entity purge(Long id) throws NotFoundInRecycleBin_Exception {
-    	Optional<Entity> maybeDeleted = repository.findInRecycleBinById(id);
-    	
-        if (maybeDeleted.isPresent()) {
-        	Entity purged = maybeDeleted.get();
-    		repository.delete(purged);
-    		return purged;
-        } else 
-        	throw new NotFoundInRecycleBin_Exception(entityType(), id);
+    	Entity purged = findInRecycleBinById(id);
+		repository.delete(purged);
+		return purged;
     }
     
     @Transactional(noRollbackFor = NotFoundInRecycleBin_Exception.class)
@@ -126,5 +117,14 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     @Transactional(readOnly = true)
     public List<Entity> recycleBin() {
     	return repository.findAllRecycleBin();
+    }
+    
+    @Transactional(readOnly = true)
+    public Entity findInRecycleBinById(long id) throws NotFoundInRecycleBin_Exception {
+    	Optional<Entity> maybeEntity = repository.findInRecycleBinById(id);
+    	if (maybeEntity.isPresent())
+    		return maybeEntity.get();
+    	else
+    		throw new NotFoundInRecycleBin_Exception(entityType(), id);
     }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
+import lombok.AllArgsConstructor;
 import tech.zumaran.genesis.GenesisEntity;
 import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.UniqueConstraintException;
@@ -20,7 +21,7 @@ public interface UniqueConstraint<Entity extends GenesisEntity> {
 
 	Optional<Entity> findDuplicateEntry(Entity entity);
 	
-	default Entity uniqueInsert(InsertFunction<Entity> insertFunction, Entity entity) throws GenesisException {
+	default Entity uniqueInsert(Entity entity, InsertFunction<Entity> insertFunction) throws GenesisException {
 		try {
 			return insertFunction.apply(entity);
 		} catch (DataIntegrityViolationException e) {
@@ -29,24 +30,32 @@ public interface UniqueConstraint<Entity extends GenesisEntity> {
     		if (cause instanceof SQLIntegrityConstraintViolationException) {
     			final var sqlViolation = (SQLIntegrityConstraintViolationException) cause;
     			
-    			if (sqlViolation.getErrorCode() == 1062) {
-    				Optional<Entity> maybeDuplicate = findDuplicateEntry(entity); 
-    				if (maybeDuplicate.isPresent()) {
-    					Entity duplicate = maybeDuplicate.get();
-    					if (duplicate.isDeleted()) {
-        					duplicate.setDeleted(false);
-        					flushRepository();
-        					return duplicate;
-        				}
-    				}
-    			}
-    			throw new UniqueConstraintException(sqlViolation.getErrorCode() + "", sqlViolation.getMessage());
+    			if (sqlViolation.getErrorCode() != 1062)
+    				throw new UniqueConstraintException(sqlViolation.getErrorCode() + "", sqlViolation.getMessage());
+    			
+    			Optional<Entity> maybeDuplicate = findDuplicateEntry(entity); 
+    			
+    			if (maybeDuplicate.isEmpty())
+    				throw new UniqueConstraintException(sqlViolation.getErrorCode() + "", sqlViolation.getMessage());
+				
+    			Entity duplicate = maybeDuplicate.get();
+				
+				if (duplicate.isDeleted()) {
+					duplicate.setDeleted(false);
+					flushRepository();
+					return duplicate;
+				} else {
+					return duplicate;
+				}
+    		} else {
+    			throw new UniqueConstraintException(e.getMessage());
     		}
-			throw new UniqueConstraintException(e.getMessage());
 		}
 	}
 
-	default List<Entity> uniqueInsertAll(InsertAllFunction<Entity> insertFunction, Collection<Entity> entities) throws GenesisException {
+	default List<Entity> uniqueInsertAll(Collection<Entity> entities, InsertAllFunction<Entity> insertFunction) throws GenesisException {
+		if (entities.isEmpty()) return List.of();
+		
 		try {
 			return new ArrayList<Entity>(insertFunction.apply(entities));
 		} catch (DataIntegrityViolationException e) {
@@ -55,25 +64,26 @@ public interface UniqueConstraint<Entity extends GenesisEntity> {
     		if (cause instanceof SQLIntegrityConstraintViolationException) {
     			final var sqlViolation = (SQLIntegrityConstraintViolationException) cause;
     			
-    			if (sqlViolation.getErrorCode() == 1062) {
-    				EntryWithDuplicates<Entity> entry = findDuplicateEntries(entities); 
-    				
-    				if (entry.newOnes.isEmpty()) 
-    					throw new UniqueConstraintException("All entities are duplicates-");
-    				
-    				List<Entity> inserted = new ArrayList<Entity>(insertFunction.apply(entry.newOnes));
-    				
-    				entry.duplicates.stream()
-    					.filter(d -> d.isDeleted())
-    					.forEach(d -> d.setDeleted(false));
-					flushRepository();
-					
-    				inserted.addAll(entry.duplicates);
-					return inserted;
-    			}
-    			throw new UniqueConstraintException(sqlViolation.getErrorCode() + "", sqlViolation.getMessage());
+    			if (sqlViolation.getErrorCode() != 1062) 
+    				throw new UniqueConstraintException(sqlViolation.getErrorCode() + "", sqlViolation.getMessage());
+    			
+    			EntryWithDuplicates<Entity> entry = findDuplicateEntries(entities); 
+				
+				if (entry.newOnes.isEmpty()) 
+					throw new UniqueConstraintException("All entities are duplicates");
+				
+				List<Entity> inserted = new ArrayList<Entity>(insertFunction.apply(entry.newOnes));
+				
+				entry.duplicates.stream()
+					.filter(d -> d.isDeleted())
+					.forEach(d -> d.setDeleted(false));
+				flushRepository();
+				
+				inserted.addAll(entry.duplicates);
+				return inserted;
+    		} else {
+    			throw new UniqueConstraintException(e.getMessage());
     		}
-			throw new UniqueConstraintException(e.getMessage());
 		}
 	}
 
@@ -92,13 +102,9 @@ public interface UniqueConstraint<Entity extends GenesisEntity> {
 		return new EntryWithDuplicates<Entity>(newOnes, duplicates);
 	}
 	
+	@AllArgsConstructor
 	static class EntryWithDuplicates<E extends GenesisEntity> {
-		final  List<E> newOnes;
+		final List<E> newOnes;
 		final List<E> duplicates;
-
-		public EntryWithDuplicates(List<E> newOnes, List<E> duplicates) {
-			this.newOnes = newOnes;
-			this.duplicates = duplicates;
-		}
 	}
 }

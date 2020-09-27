@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.NotFoundException;
 import tech.zumaran.genesis.exception.NotFoundInRecycleBin_Exception;
 import tech.zumaran.genesis.response.ResponseFactory;
@@ -34,12 +35,12 @@ public abstract class GenesisController<Entity extends GenesisEntity> {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> insert(@RequestBody Entity entity) {
+    public ResponseEntity<?> insert(@RequestBody Entity entity) throws GenesisException {
     	return responseFactory.created(service.insert(entity));
     }
     
     @PostMapping("/addall")
-    public ResponseEntity<?> insertAll(@RequestBody List<Entity> entities) {
+    public ResponseEntity<?> insertAll(@RequestBody List<Entity> entities) throws GenesisException {
         return responseFactory.created(service.insertAll(entities));
     }
 
@@ -71,5 +72,10 @@ public abstract class GenesisController<Entity extends GenesisEntity> {
     @GetMapping("/recyclebin")
     public ResponseEntity<List<Entity>> recycleBin() {
         return ResponseEntity.ok(service.recycleBin());
+    }
+    
+    @GetMapping("/recyclebin/{id}")
+    public ResponseEntity<Entity> recycleBin(@PathVariable long id) throws NotFoundInRecycleBin_Exception {
+        return ResponseEntity.ok(service.findInRecycleBinById(id));
     }
 }
