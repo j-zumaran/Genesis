@@ -12,14 +12,16 @@ import org.hibernate.annotations.ColumnDefault;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @ToString
-@NoArgsConstructor
 @MappedSuperclass
+@NoArgsConstructor
+@EqualsAndHashCode
 public abstract class GenesisEntity implements Serializable {
 	
 	private static final long serialVersionUID = -2687522230964778557L;
