@@ -50,8 +50,16 @@ public class ResponseFactory {
 		return new DeletedAllResponse(deleted).createResponse();
 	}
 	
-	public ResponseEntity<?> purged(GenesisEntity entity) {
-		return new PurgedResponse(entity).createResponse();
+	public ResponseEntity<?> recovered(GenesisEntity recovered) {
+		return new RecoveredResponse(recovered).createResponse();
+	}
+	
+	public ResponseEntity<?> recovered(List<? extends GenesisEntity> recovered) {
+		return new RecoveredAllResponse(recovered).createResponse();
+	}
+	
+	public ResponseEntity<?> purged(GenesisEntity purged) {
+		return new PurgedResponse(purged).createResponse();
 	}
 	
 	public ResponseEntity<?> purged(List<? extends GenesisEntity> purged) {

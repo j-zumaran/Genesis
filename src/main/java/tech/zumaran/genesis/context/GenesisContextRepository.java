@@ -9,7 +9,7 @@ import tech.zumaran.genesis.GenesisRepository;
 
 public interface GenesisContextRepository<Context extends GenesisContext> extends GenesisRepository<Context> {
 
-    @Query(value = "SELECT * FROM context p WHERE p.context_id = :contextId", nativeQuery = true)
+    @Query(value = "SELECT * FROM #{#entityName} p WHERE p.context_id = :contextId", nativeQuery = true)
     Optional<Context> findByContextId(@Param("contextId") long contextId);
 
 }

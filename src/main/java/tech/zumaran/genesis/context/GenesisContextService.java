@@ -8,10 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.NotFoundException;
 
-public abstract class GenesisContextService<Context extends GenesisContext> {
+public abstract class GenesisContextService
+		<Context extends GenesisContext, 
+		Repository extends GenesisContextRepository<Context>> {
 
 	@Autowired
-	protected GenesisContextRepository<Context> repository;
+	protected Repository repository;
 	
 	protected abstract Context newContext(long userId);
 	

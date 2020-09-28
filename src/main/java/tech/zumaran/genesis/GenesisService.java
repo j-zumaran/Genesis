@@ -11,12 +11,12 @@ import tech.zumaran.genesis.exception.GenesisException;
 import tech.zumaran.genesis.exception.NotFoundException;
 import tech.zumaran.genesis.exception.NotFoundInRecycleBin_Exception;
 
-public abstract class GenesisService<Entity extends GenesisEntity> {
+public abstract class GenesisService<Entity extends GenesisEntity, Repository extends GenesisRepository<Entity>> {
 
     protected abstract Class<Entity> entityType();
 
     @Autowired
-	protected GenesisRepository<Entity> repository;
+	protected Repository repository;
 
     @Transactional(readOnly = true)
     public List<Entity> findAll() {
@@ -84,7 +84,7 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     }
     
     @Transactional
-    public List<Entity> recoverAll(List<Entity> entities) {
+    protected List<Entity> recoverAll(List<Entity> entities) {
     	entities.forEach(e -> e.setDeleted(false));
         //repository.flush();
         return entities;

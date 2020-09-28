@@ -16,10 +16,13 @@ import tech.zumaran.genesis.exception.NotFoundException;
 import tech.zumaran.genesis.exception.NotFoundInRecycleBin_Exception;
 import tech.zumaran.genesis.response.ResponseFactory;
 
-public abstract class GenesisController<Entity extends GenesisEntity> {
+public abstract class GenesisController
+		<Entity extends GenesisEntity,
+		Repository extends GenesisRepository<Entity>,
+		Service extends GenesisService<Entity, Repository>> {
 
 	@Autowired
-	protected GenesisService<Entity> service;
+	protected Service service;
 
 	@Autowired
     protected ResponseFactory responseFactory;
@@ -55,8 +58,18 @@ public abstract class GenesisController<Entity extends GenesisEntity> {
     }
     
     @DeleteMapping("/delete/all")
-    public ResponseEntity<?> deleteAll(@PathVariable List<Long> ids) {
+    public ResponseEntity<?> deleteAll(@RequestBody List<Long> ids) {
         return responseFactory.deleted(service.deleteAllById(ids));
+    }
+    
+    @PutMapping("/recover/{id}")
+    public ResponseEntity<?> recover(@PathVariable long id) throws NotFoundInRecycleBin_Exception {
+        return responseFactory.recovered(service.recover(id));
+    }
+    
+    @PutMapping("/recover/all")
+    public ResponseEntity<?> recoverAll(@RequestBody List<Long> ids) {
+        return responseFactory.recovered(service.recoverAllById(ids));
     }
 
     @DeleteMapping("/purge/{id}")
@@ -64,8 +77,8 @@ public abstract class GenesisController<Entity extends GenesisEntity> {
         return responseFactory.purged(service.purge(id));
     }
     
-    @DeleteMapping("/purgeall/{id}")
-    public ResponseEntity<?> purge(@PathVariable List<Long> ids) throws NotFoundInRecycleBin_Exception {
+    @DeleteMapping("/purge/all")
+    public ResponseEntity<?> purge(@RequestBody List<Long> ids) throws NotFoundInRecycleBin_Exception {
         return responseFactory.purged(service.purgeAllById(ids));
     }
     
@@ -75,7 +88,7 @@ public abstract class GenesisController<Entity extends GenesisEntity> {
     }
     
     @GetMapping("/recyclebin/{id}")
-    public ResponseEntity<Entity> recycleBin(@PathVariable long id) throws NotFoundInRecycleBin_Exception {
+    public ResponseEntity<Entity> recycleBinById(@PathVariable long id) throws NotFoundInRecycleBin_Exception {
         return ResponseEntity.ok(service.findInRecycleBinById(id));
     }
 }
