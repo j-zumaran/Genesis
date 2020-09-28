@@ -32,12 +32,12 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
         	throw new NotFoundException(entityType(), id);
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = GenesisException.class)
     public Entity insert(Entity entity) throws GenesisException {
     	return repository.saveAndFlush(entity);
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = GenesisException.class)
     public List<Entity> insertAll(Collection<Entity> entities) throws GenesisException {
     	return repository.saveAll(entities);
     }
@@ -119,7 +119,7 @@ public abstract class GenesisService<Entity extends GenesisEntity> {
     	return repository.findAllRecycleBin();
     }
     
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, noRollbackFor = NotFoundInRecycleBin_Exception.class)
     public Entity findInRecycleBinById(long id) throws NotFoundInRecycleBin_Exception {
     	Optional<Entity> maybeEntity = repository.findInRecycleBinById(id);
     	if (maybeEntity.isPresent())

@@ -19,7 +19,7 @@ public abstract class ContextEntityService<Context extends GenesisContext, Entit
     
     protected abstract Class<Entity> entityType();
     
-    @Transactional
+    @Transactional(noRollbackFor = NotFoundException.class)
     private Context getContext(long contextId) throws NotFoundException {
     	return appContextService.findByContextId(contextId);
     }
